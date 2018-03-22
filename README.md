@@ -1,22 +1,22 @@
-Deep Quaternionary Convolutional Neural Networks
+Quaternion-Valued Convolutional Neural Networks for End-to-End Automatic Speech Recognition
 =====================
 
 This repository contains code which reproduces experiments presented in
-the paper ...
+the paper [link incoming]
 
 Requirements
 ------------
 
 Install requirements for experiments with pip:
 ```
-pip install numpy tensorflow-gpu keras
+pip install numpy tensorflow-gpu keras theano
 ```
 Depending on your Python installation you might want to use anaconda or other tools.
-
+You can also go to the 'Installation' Section and execute the command for an automatic installation.
 
 Installation
 ------------
-
+Install all the needed dependencies.
 ```
 python setup.py install
 ```
@@ -33,7 +33,7 @@ Experiments
 2. Run models:
 
     ```
-    python scripts/run.py train -w WORKDIR --model {real,complex,quaternion} --seg{chiheb,parcollet} --sf STARTFILTER --nb NUMBEROFBLOCKSPERSTAGE
+    python scripts/run.py train --model {real,quaternion} --sf STARTFILTER --nl NUMBEROFLAYERS
     ```
 
     Other arguments may be added as well; Refer to run.py train --help for
@@ -41,6 +41,7 @@ Experiments
       - Optimizer settings
       - Dropout rate
       - Clipping
+	  - Saving prefix
       - ...
 
 Citation
