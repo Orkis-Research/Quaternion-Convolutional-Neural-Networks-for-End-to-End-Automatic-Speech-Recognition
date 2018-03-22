@@ -414,7 +414,9 @@ def train(d):
         quaternion = True            
     else:
         quaternion = False
-
+    
+    if not os.path.exists(d.workdir+"/LOGS"):
+        os.makedirs(d.workdir+"/LOGS")
     savedir = d.workdir+"/LOGS/"+d.save_prefix
 
     #
