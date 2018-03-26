@@ -247,9 +247,9 @@ def train(d):
     My_dev_generator = timitGenerator("dev")
 
 
-    L.getLogger("entry").info("Training   set length: "+str(Timit('train').num_examples))
-    L.getLogger("entry").info("Validation set length: "+str(Timit('dev').num_examples))
-    L.getLogger("entry").info("Test       set length: "+str(Timit('test').num_examples))
+    L.getLogger("entry").info("Training   set length: "+str(0))
+    L.getLogger("entry").info("Validation set length: "+str(0))
+    L.getLogger("entry").info("Test       set length: "+str(0))
     L.getLogger("entry").info("Loaded  dataset {:s}.".format("TIMIT"))
 
     #
