@@ -27,7 +27,7 @@ import numpy                                 as     np
 import os, pdb, socket, sys, time
 import theano                                as     T
 from keras.backend.tensorflow_backend        import set_session
-from models_timit                            import getTimitResnetModel2D, ctc_lambda_func
+from models_timit                            import getTimitModel2D, ctc_lambda_func
 import tensorflow                            as tf
 import itertools
 import random
