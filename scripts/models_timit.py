@@ -10,10 +10,10 @@ import keras
 from   keras.callbacks                       import Callback, ModelCheckpoint, LearningRateScheduler
 from   keras.datasets                        import cifar10, cifar100
 from   keras.initializers                    import Orthogonal
-from   keras.layers                          import Layer, Dropout, AveragePooling1D, 
-                                                    AveragePooling2D, AveragePooling3D, add, Add, concatenate, 
-                                                    Concatenate, Input, Flatten, Dense, Convolution2D, BatchNormalization, 
-                                                    Activation, Reshape, ConvLSTM2D, Conv2D, Lambda, Permute, TimeDistributed, 
+from   keras.layers                          import Layer, Dropout, AveragePooling1D, \
+                                                    AveragePooling2D, AveragePooling3D, add, Add, concatenate, \
+                                                    Concatenate, Input, Flatten, Dense, Convolution2D, BatchNormalization, \
+                                                    Activation, Reshape, ConvLSTM2D, Conv2D, Lambda, Permute, TimeDistributed, \
                                                     SpatialDropout1D, PReLU
 from   keras.models                          import Model, load_model, save_model
 from   keras.optimizers                      import SGD, Adam, RMSprop
