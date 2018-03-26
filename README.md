@@ -23,10 +23,10 @@ python setup.py install
 
 TIMIT
 -----
-Since the TIMIT dataset is not free, you most create your own datas, and also create your own:
+Since the TIMIT dataset is not free, you must create your own features, and also create your own:
   - Keras Data Generator (See scripts/training.py)
   - Keras Edit Distance Accuracy (See scripts/training.py)
-  
+
 Experiments
 -----------
 
