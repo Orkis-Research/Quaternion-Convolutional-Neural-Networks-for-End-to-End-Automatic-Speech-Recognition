@@ -14,7 +14,7 @@ from   keras.initializers                    import Orthogonal
 from   keras.layers                          import (Layer, Dropout, AveragePooling1D, AveragePooling2D,  
                                                     AveragePooling3D, add, Add, concatenate, Concatenate, 
                                                     Input, Flatten, Dense, Convolution2D, BatchNormalization, 
-                                                    Activation, Reshape, ConvLSTM2D, Conv2D, Lambda )
+                                                    Activation, Reshape, ConvLSTM2D, Conv2D, Lambda)
 from   keras.models                          import Model, load_model, save_model 
 from   keras.optimizers                      import SGD, Adam, RMSprop
 from   keras.regularizers                    import l2
@@ -27,7 +27,7 @@ import numpy                                 as     np
 import os, pdb, socket, sys, time
 import theano                                as     T
 from keras.backend.tensorflow_backend        import set_session
-from models_timit                            import getTimitResnetModel2D,ctc_lambda_func
+from models_timit                            import getTimitResnetModel2D, ctc_lambda_func
 import tensorflow                            as tf
 import itertools
 import random
