@@ -179,12 +179,10 @@ def getTimitModel2D(d):
     O = Lambda(ctc_lambda_func, output_shape=(1,), name='ctc')([pred, labels,input_length,label_length])
     
     # Return the model
-    if d.dataset == "timit":
-        #
-        # Creating a function for testing and validation purpose
-        #
-        val_function = K.function([I],[pred])
-        return Model(inputs=[I, input_length, labels, label_length], outputs=O), val_function
-    else:
-        raise ValueError("Unknown dataset "+d.dataset)
+    #
+    # Creating a function for testing and validation purpose
+    #
+    val_function = K.function([I],[pred])
+    return Model(inputs=[I, input_length, labels, label_length], outputs=O), val_function
+    
 
