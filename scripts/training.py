@@ -5,9 +5,6 @@
 # Imports
 import editdistance
 import h5py
-import datasets.timit
-from datasets.timit import Timit
-from datasets.utils import construct_conv_stream, phone_to_phoneme_dict
 import complexnn
 from   complexnn                             import *
 import h5py                                  as     H
@@ -36,76 +33,48 @@ import itertools
 import random
 
 
-#
+#######################
 # Generator wrapper for timit
+# You must write this generator in order to feat the Keras training loop
+# the outputs should be:
+# Input_data, Input_label, Input_length, Label_length
 #
+# Input_data: A batch of input sequence (Batch_size, Sequence_length, features(123))
+# Input_label: Corresponding label (Batch_size, Sequence length)
+# Input_length: Maximum sequence length (int32)
+# Label_length: Maximum Label length (int32)
 
-def timitGenerator(stream):
+def timitGenerator(dataset):
     while True:
-        for data in stream.get_epoch_iterator():
-            yield data
+        Input_data   = 0
+        Input_label  = 0
+        Input_length = 0
+        Label_length = 0
+            yield Input_data, Input_label, Input_length, Label_length
 
-#
+#######################
 # Custom metrics
-#
-class EditDistance(Callback):
-    def __init__(self, func, dataset, quaternion, save_prefix):
-	self.func         = func
-        if(dataset in ['train','test','dev']):
-            self.dataset_type = dataset
-            self.save_prefix = save_prefix
-            self.dataset = Timit(str(dataset))
-            self.full_phonemes_dict = self.dataset.get_phoneme_dict()
-            self.ind_phonemes_dict = self.dataset.get_phoneme_ind_dict()
-            self.rng     = np.random.RandomState(123)
-            self.data_stream  = construct_conv_stream(self.dataset, self.rng, 20, 1000,quaternion)
-            
-        else:
-            raise ValueError("Unknown dataset for edit distance "+dataset)
+# This metric has to be adapted to YOUR generator
+# It's not functional since OUR generator is not provided
+# It's provided as an example
 
-    def labels_to_text(self,labels):
-        ret = []
-        for c in labels:
-            if c == len(self.full_phonemes_dict) - 2:
-                ret.append("")
-            else:
-                c_ = self.full_phonemes_dict[c + 1]
-                ret.append(phone_to_phoneme_dict.get(c_, c_))
-        ret = [k for k, g in itertools.groupby(ret)]
-        return list(filter(lambda c: c != "", ret))
+#class EditDistance(Callback):
+#    def __init__(self, func, dataset, quaternion, save_prefix):
+	   
 
-    def decode_batch(self, out, mask):
-        ret = []
-        for j in range(out.shape[0]):
-            out_best = list(np.argmax(out[j], 1))[:int(mask[j])]
-            out_best = [k for k, g in itertools.groupby(out_best)]
-            # map from 61-d to 39-d
-	    out_str = self.labels_to_text(out_best)
-            ret.append(out_str)
-        return ret
-
-    def on_epoch_end(self, epoch, logs={}):
-	mean_norm_ed = 0.
-        num = 0
-        for data in self.data_stream.get_epoch_iterator():
-	    x, y = data
-            y_pred = self.func([x[0]])[0]
-            decoded_y_pred = self.decode_batch(y_pred, x[1])
-            decoded_gt = []
-            for i in range(x[2].shape[0]):
-                decoded_gt.append(self.labels_to_text(x[2][i][:int(x[3][i])]))
-	    num += len(decoded_y_pred)
-            for i, (_pred, _gt) in enumerate(zip(decoded_y_pred, decoded_gt)):
-                edit_dist = editdistance.eval(_pred, _gt)
-		mean_norm_ed += float(edit_dist) / float(len(_gt))
-        mean_norm_ed = mean_norm_ed / num
+    # Map from labels to phonemes as text
+#    def labels_to_text(self,labels):
         
-        # Dump To File Logs at every epoch for clusters sbatch
-        f=open(str(self.save_prefix)+"_"+str(self.dataset_type)+"_PER.txt",'ab')
-        mean = np.array([mean_norm_ed])
-        np.savetxt(f,mean)
-        f.close()
-        L.getLogger("train").info("PER on "+str(self.dataset_type)+" : "+str(mean_norm_ed)+" at epoch "+str(epoch))
+
+    # Decode the prediction 
+#    def decode_batch(self, out, mask):
+        
+
+    # Callback entering function 
+    # Must contain a loop over the testing dataset
+#    def on_epoch_end(self, epoch, logs={}):
+#
+########################     
 
 #
 # Callbacks:
@@ -270,22 +239,12 @@ def train(d):
     #
     # Create training data generator
     #
-    dataset = Timit('train')
-    rng=np.random.RandomState(123)
-    if d.model =="quaternion":
-        data_stream_train = construct_conv_stream(dataset, rng, 200, 1000, quaternion=True)
-    else:
-        data_stream_train = construct_conv_stream(dataset, rng, 200, 1000, quaternion=False)
+    My_train_generator = timitGenerator("train")
    
     #
     # Create dev data generator
     #
-    dataset = Timit('dev')
-    rng=np.random.RandomState(123)
-    if d.model =="quaternion":
-        data_stream_dev = construct_conv_stream(dataset, rng, 200, 10000, quaternion=True)
-    else:
-    data_stream_dev = construct_conv_stream(dataset, rng, 200, 1000, quaternion=False)
+    My_dev_generator = timitGenerator("dev")
 
 
     L.getLogger("entry").info("Training   set length: "+str(Timit('train').num_examples))
@@ -424,15 +383,20 @@ def train(d):
     #
     trainLoss = TrainLoss(savedir)
     
-    #
-    # Compute accuracies and save 
-    #
-    editDistValCb  = EditDistance(test_func,'dev',quaternion, savedir)
-    editDistTestCb = EditDistance(test_func,'test',quaternion, savedir)
-    callbacks += [trainLoss]
-    callbacks += [editDistValCb]
-    callbacks += [editDistTestCb]
+    
 
+    ######################
+    # Call your EditDistance metric
+    #
+    #editDistValCb  = EditDistance('dev')
+    #editDistTestCb = EditDistance('test')
+    #callbacks += [editDistValCb]
+    #callbacks += [editDistTestCb]
+    
+    #
+    # Compute losses
+    #
+    callbacks += [trainLoss]
     callbacks += [newLineCb]
 
     #
@@ -458,14 +422,14 @@ def train(d):
     # needed to complete ONE epoch (according to your data generator)
     ########
 
-    epochs_train = 1144
-    epochs_dev   = 121
+    epochs_train = 1
+    epochs_dev   = 1
 
-    model.fit_generator(generator        = timitGenerator(data_stream_train),
+    model.fit_generator(generator        = My_train_generator,
                         steps_per_epoch  = epochs_train,
                         epochs           = d.num_epochs,
                         verbose          = 1,
-                        validation_data  = timitGenerator(data_stream_dev),
+                        validation_data  = My_dev_generator,
                         validation_steps = epochs_dev,
                         callbacks        = callbacks,
                         initial_epoch    = initialEpoch)
