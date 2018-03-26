@@ -50,7 +50,7 @@ def timitGenerator(dataset):
         Input_label  = 0
         Input_length = 0
         Label_length = 0
-            yield Input_data, Input_label, Input_length, Label_length
+        yield Input_data, Input_label, Input_length, Label_length
 
 #######################
 # Custom metrics
