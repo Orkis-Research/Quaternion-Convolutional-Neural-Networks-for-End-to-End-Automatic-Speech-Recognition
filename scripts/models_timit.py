@@ -46,7 +46,6 @@ def ctc_lambda_func(args):
 def getTimitModel2D(d):
     n             = d.num_layers
     sf            = d.start_filter
-    dataset       = d.dataset
     activation    = d.act
     advanced_act  = d.aact
     drop_prob     = d.dropout
