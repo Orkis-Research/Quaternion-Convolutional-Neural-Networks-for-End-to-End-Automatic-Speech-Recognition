@@ -233,7 +233,7 @@ def train(d):
     #
     # Load dataset
     #
-    L.getLogger("entry").info("Loading dataset {:s} ...".format(d.dataset))
+    L.getLogger("entry").info("Loading dataset {:s} ...".format("TIMIT"))
     np.random.seed(d.seed % 2**32)
 
     #
@@ -250,7 +250,7 @@ def train(d):
     L.getLogger("entry").info("Training   set length: "+str(Timit('train').num_examples))
     L.getLogger("entry").info("Validation set length: "+str(Timit('dev').num_examples))
     L.getLogger("entry").info("Test       set length: "+str(Timit('test').num_examples))
-    L.getLogger("entry").info("Loaded  dataset {:s}.".format(d.dataset))
+    L.getLogger("entry").info("Loaded  dataset {:s}.".format("TIMIT"))
 
     #
     # Optimizers
@@ -288,32 +288,15 @@ def train(d):
     if isResuming or isResuming_weight:
         
         # Reload Model and Optimizer
-        if d.dataset == "timit":
-            L.getLogger("entry").info("Re-Creating the model from scratch.")
-            model_mono,test_func = getTimitResnetModel2D(d)
-            model_mono.load_weights(chkptFilename_weight)
-            with H.File(chkptFilename_weight, "r") as f:
-                initialEpoch = int(f["initialEpoch"][...])
-            L.getLogger("entry").info("Training will restart at epoch {:5d}.".format(initialEpoch+1))
-            L.getLogger("entry").info("Compilation Started.")
+        L.getLogger("entry").info("Re-Creating the model from scratch.")
+        model_mono,test_func = getTimitResnetModel2D(d)
+        model_mono.load_weights(chkptFilename_weight)
+        with H.File(chkptFilename_weight, "r") as f:
+            initialEpoch = int(f["initialEpoch"][...])
+        L.getLogger("entry").info("Training will restart at epoch {:5d}.".format(initialEpoch+1))
+        L.getLogger("entry").info("Compilation Started.")
 
-        else:
-            
-            L.getLogger("entry").info("Reloading a model from "+chkptFilename+" ...")
-            np.random.seed(d.seed % 2**32)
-            model = KM.load_model(chkptFilename, custom_objects={
-                "QuaternionConv2D":          QuaternionConv2D,
-                "QuaternionConv1D":          QuaternionConv1D,
-                "GetIFirst":                   GetIFirst,
-                "GetJFirst":                   GetJFirst,
-                "GetKFirst":                   GetKFirst,
-                "GetRFirst":                   GetRFirst,
-                })
-            L.getLogger("entry").info("... reloading complete.")
-            with H.File(chkptFilename, "r") as f:
-                initialEpoch = int(f["initialEpoch"][...])
-            L.getLogger("entry").info("Training will restart at epoch {:5d}.".format(initialEpoch+1))
-            L.getLogger("entry").info("Compilation Started.")
+        
     else:
         model_mono,test_func = getTimitModel2D(d)
         
