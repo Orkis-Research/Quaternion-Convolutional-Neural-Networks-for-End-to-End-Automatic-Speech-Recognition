@@ -2,7 +2,7 @@ Quaternion-Valued Convolutional Neural Networks for End-to-End Automatic Speech 
 =====================
 
 This repository contains code which reproduces experiments presented in
-the paper [link incoming]
+the paper [Quaternion Convolutional Neural Networks for End-to-End Automatic Speech Recognition](https://www.researchgate.net/publication/325578506_Quaternion_Convolutional_Neural_Networks_for_End-to-End_Automatic_Speech_Recognition)
 
 Requirements
 ------------
