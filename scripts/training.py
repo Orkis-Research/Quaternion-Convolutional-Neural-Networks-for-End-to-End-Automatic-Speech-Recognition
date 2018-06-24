@@ -35,7 +35,7 @@ import random
 
 #######################
 # Generator wrapper for timit
-# You must write this generator in order to feat the Keras training loop
+# You must write this generator in order to fit the Keras training loop
 # the outputs should be:
 # Input_data, Input_label, Input_length, Label_length
 #
