@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Authors: Titouan Parcollet
+# Authors: Olexa Bilaniuk
 
 # Imports.
 import sys; sys.path += [".", ".."]
