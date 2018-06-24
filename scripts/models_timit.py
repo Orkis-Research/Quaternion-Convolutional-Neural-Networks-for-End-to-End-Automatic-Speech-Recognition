@@ -40,7 +40,7 @@ def ctc_lambda_func(args):
     return K.ctc_batch_cost(labels, y_pred, input_length, label_length)
 
 #
-# Get ResNet Model
+# Get Model
 #
 
 def getTimitModel2D(d):
