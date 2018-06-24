@@ -62,16 +62,16 @@ def timitGenerator(dataset):
 #    def __init__(self, func, dataset, quaternion, save_prefix):
 	   
 
-    # Map from labels to phonemes as text
+# Map from labels to phonemes as text
 #    def labels_to_text(self,labels):
         
 
-    # Decode the prediction 
+# Decode the prediction 
 #    def decode_batch(self, out, mask):
         
 
-    # Callback entering function 
-    # Must contain a loop over the testing dataset
+# Callback entering function 
+# Must contain a loop over the testing dataset
 #    def on_epoch_end(self, epoch, logs={}):
 #
 ########################     
