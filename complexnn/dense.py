@@ -11,8 +11,7 @@ from keras import backend as K
 from keras import activations, initializers, regularizers, constraints
 from keras.layers import Layer, InputSpec
 import numpy as np
-from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
-from .bn import sqrt_init
+from .init import *
 
 class QuaternionDense(Layer):
     """Regular quaternion densely-connected NN layer.
