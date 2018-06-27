@@ -5,7 +5,7 @@
 # Authors: Olexa Bilaniuk
 #
 # What this module includes by default:
-import conv, dense, fft, init,
+import conv, dense, fft, init
 
 from   .conv  import (QuaternionConv,
 					  QuaternionConv1D,
