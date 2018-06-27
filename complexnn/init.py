@@ -101,5 +101,4 @@ class SqrtInit(Initializer):
 
 # Aliases:
 sqrt_init = SqrtInit
-quaternion_independent_filters = QuaternionIndependentFilters
 quaternion_init = QuaternionInit
