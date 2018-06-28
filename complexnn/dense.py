@@ -11,7 +11,7 @@ from keras import backend as K
 from keras import activations, initializers, regularizers, constraints
 from keras.layers import Layer, InputSpec
 import numpy as np
-from .init import *
+from .init import qdense_init
 
 class QuaternionDense(Layer):
     """Regular quaternion densely-connected NN layer.
@@ -59,7 +59,7 @@ class QuaternionDense(Layer):
                  activation=None,
                  use_bias=True,
                  init_criterion='he',
-                 kernel_initializer=sqrt_init,
+                 kernel_initializer=qdense_init,
                  bias_initializer='zeros',
                  kernel_regularizer=None,
                  bias_regularizer=None,
@@ -72,13 +72,10 @@ class QuaternionDense(Layer):
             kwargs['input_shape'] = (kwargs.pop('input_dim'),)
         super(QuaternionDense, self).__init__(**kwargs)
         self.units = units
+        self.q_units = units // 4
         self.activation = activations.get(activation)
         self.use_bias = use_bias
         self.init_criterion = init_criterion
-        if kernel_initializer in {'complex'}:
-            self.kernel_initializer = kernel_initializer
-        else:
-            self.kernel_initializer = initializers.get(kernel_initializer)
         self.bias_initializer = initializers.get(bias_initializer)
         self.kernel_regularizer = regularizers.get(kernel_regularizer)
         self.bias_regularizer = regularizers.get(bias_regularizer)
@@ -98,71 +95,23 @@ class QuaternionDense(Layer):
         input_dim = input_shape[-1] // 4
         data_format = K.image_data_format()
         kernel_shape = (input_dim, self.units)
-        fan_in, fan_out = initializers._compute_fans(
-            kernel_shape,
-            data_format=data_format
-        )
-        if self.init_criterion == 'he':
-            s = np.sqrt(1. / fan_in)
-        elif self.init_criterion == 'glorot':
-            s = np.sqrt(1. / (fan_in + fan_out))
-        rng = RandomStreams(seed=self.seed)
+        init_shape = (input_dim, self.q_units)
+        
+        kern_init = qdense_init(init_shape, self.init_criterion)
 
-        # Initialization using euclidean representation:
-        def init_w_real(shape, dtype=None):
-            return rng.normal(
-                size=kernel_shape,
-                avg=0,
-                std=s,
-                dtype=dtype
-            )
-        def init_w_imag(shape, dtype=None):
-            return rng.normal(
-                size=kernel_shape,
-                avg=0,
-                std=s,
-                dtype=dtype
-            )
-        if self.kernel_initializer in {'quaternion'}:
-            real_init = init_w_real
-            imag_init = init_w_imag
-        else:
-            real_init = self.kernel_initializer
-            imag_init = self.kernel_initializer
-
-        self.r = self.add_weight(
+        self.kernel = self.add_weight(
             shape=kernel_shape,
-            initializer=real_init,
+            initializer=kern_init,
             name='r',
             regularizer=self.kernel_regularizer,
             constraint=self.kernel_constraint
         )
-        self.i = self.add_weight(
-            shape=kernel_shape,
-            initializer=imag_init,
-            name='i',
-            regularizer=self.kernel_regularizer,
-            constraint=self.kernel_constraint
-        )
-        self.j = self.add_weight(
-            shape=kernel_shape,
-            initializer=imag_init,
-            name='j',
-            regularizer=self.kernel_regularizer,
-            constraint=self.kernel_constraint
-        )
-        self.k = self.add_weight(
-            shape=kernel_shape,
-            initializer=imag_init,
-            name='k',
-            regularizer=self.kernel_regularizer,
-            constraint=self.kernel_constraint
-        )
+
         
         if self.use_bias:
             self.bias = self.add_weight(
-                shape=(4 * self.units,),
-                initializer=self.bias_initializer,
+                shape=(self.units,),
+                initializer='zeros',
                 name='bias',
                 regularizer=self.bias_regularizer,
                 constraint=self.bias_constraint
@@ -178,10 +127,14 @@ class QuaternionDense(Layer):
         input_dim = input_shape[-1] // 4
         
 
+        self.r   = self.kernel[:, :self.q_units]
+        self.i   = self.kernel[:, self.q_units:self.q_units*2]
+        self.j   = self.kernel[:, self.q_units*2:self.q_units*3]
+        self.k   = self.kernel[:, self.q_units*3:]
+
         #
         # Concatenate to obtain Hamilton matrix
         #
-
         cat_kernels_4_r = K.concatenate([self.r, -self.i, -self.j, -self.k], axis=-1)  
         cat_kernels_4_i = K.concatenate([self.i, self.r, -self.k, self.j], axis=-1)
         cat_kernels_4_j = K.concatenate([self.j, self.k, self.r, -self.i], axis=-1)
@@ -213,7 +166,7 @@ class QuaternionDense(Layer):
         assert input_shape and len(input_shape) == 2
         assert input_shape[-1]
         output_shape = list(input_shape)
-        output_shape[-1] = self.units * 4
+        output_shape[-1] = self.units
         return tuple(output_shape)
 
     def get_config(self):
