@@ -19,7 +19,7 @@ from keras.utils.generic_utils import (serialize_keras_object,
 #####################################################################
 
 
-class QuaternionInit(Initializer):
+class qconv_init(Initializer):
 	# The standard complex initialization using
 	# either the He or the Glorot criterion.
 	def __init__(self, kernel_size, input_dim,
