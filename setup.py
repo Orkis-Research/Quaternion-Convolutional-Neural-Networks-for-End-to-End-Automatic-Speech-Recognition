@@ -13,6 +13,6 @@ setup(
     packages=['complexnn'],
     scripts=['scripts/run.py', 'scripts/training.py'],
     install_requires=[
-        "numpy", "scipy", "sklearn", "Theano", "keras", "kerosene", "tensorflow-gpu"]
+        "numpy", "scipy", "scikit-learn", "keras", "tensorflow-gpu"]
         
 )

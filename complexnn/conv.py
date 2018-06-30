@@ -95,7 +95,7 @@ class QuaternionConv(Layer):
 				 kernel_size,
 				 strides=1,
 				 padding='valid',
-				 data_format=None,
+				 data_format='channels_first',
 				 dilation_rate=1,
 				 activation=None,
 				 use_bias=True,
@@ -165,9 +165,8 @@ class QuaternionConv(Layer):
 		input_dim = input_shape[channel_axis] // 4
 		self.kernel_shape = self.kernel_size + (input_dim , self.filters)
 		
-                if self.kernel_initializer in {'quaternion', 'quaternion_independent'}:
-			kls = {'quaternion':			 QuaternionInit,
-				   'quaternion_independent': QuaternionIndependentFilters}[self.kernel_initializer]
+                if self.kernel_initializer in {'quaternion'}:
+			kls = {'quaternion':			 qconv_init}[self.kernel_initializer]
 			kern_init = kls(
 				kernel_size=self.kernel_size,
 				input_dim=input_dim,
@@ -487,6 +486,7 @@ class QuaternionConv1D(QuaternionConv):
 				 kernel_size,
 				 strides=1,
 				 padding='valid',
+				 data_format='channels_first',
 				 dilation_rate=1,
 				 activation=None,
 				 use_bias=True,
@@ -507,7 +507,7 @@ class QuaternionConv1D(QuaternionConv):
 			kernel_size=kernel_size,
 			strides=strides,
 			padding=padding,
-			data_format='channels_last',
+			data_format=data_format,
 			dilation_rate=dilation_rate,
 			activation=activation,
 			use_bias=use_bias,
@@ -621,7 +621,7 @@ class QuaternionConv2D(QuaternionConv):
 				 kernel_size,
 				 strides=(1, 1),
 				 padding='valid',
-				 data_format=None,
+				 data_format='channels_first',
 				 dilation_rate=(1, 1),
 				 activation=None,
 				 use_bias=True,
@@ -757,7 +757,7 @@ class QuaternionConv3D(QuaternionConv):
 				 kernel_size,
 				 strides=(1, 1, 1),
 				 padding='valid',
-				 data_format=None,
+				 data_format='channels_first',
 				 dilation_rate=(1, 1, 1),
 				 activation=None,
 				 use_bias=True,

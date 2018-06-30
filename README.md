@@ -1,51 +1,38 @@
 Quaternion-Valued Convolutional Neural Networks for End-to-End Automatic Speech Recognition
 =====================
 
-This repository contains code which reproduces experiments presented in
+This repository contains the code for a simple implementation of the QCNN presented in
 the paper [Quaternion Convolutional Neural Networks for End-to-End Automatic Speech Recognition](https://www.researchgate.net/publication/325578506_Quaternion_Convolutional_Neural_Networks_for_End-to-End_Automatic_Speech_Recognition)
 
-Requirements
-------------
+Requirements & Installation
+---------------------------
 
-Install requirements for experiments with pip:
-```
-pip install numpy tensorflow-gpu keras theano
-```
-Depending on your Python installation you might want to use anaconda or other tools.
-You can also go to the 'Installation' Section and execute the command for an automatic installation.
-
-Installation
-------------
-Install all the needed dependencies.
+Install all the needed dependencies with:
 ```
 python setup.py install
 ```
 
+Or manually:
+```
+pip install numpy tensorflow-gpu keras scikit-learn 
+```
+Depending on your Python installation you might want to use anaconda or other tools.
+Note that this code works on python 2.7.13. However it has not been tested on 3.x.
+
 TIMIT
 -----
-Since the TIMIT dataset is not free, you must create your own features, and also create your own:
-  - Keras Data Generator (See scripts/training.py)
-  - Keras Edit Distance Accuracy (See scripts/training.py)
+Since the TIMIT dataset is not free, the working_example.py script does not run an experiment on this corpus. However, models used for the experiments
+of our paper can be found in models/interspeech_model.py.
 
-Experiments
+
+
+Experiment
 -----------
 
-1. Get help:
+1. Run the working example:
 
     ```
-    python scripts/run.py train --help
+    python working_example.py --model {QDNN, QCNN, DNN, CNN}
     ```
 
-2. Run models:
-
-    ```
-    python scripts/run.py train --model {real,quaternion} --sf STARTFILTER --nl NUMBEROFLAYERS
-    ```
-
-    Other arguments may be added as well; Refer to run.py train --help for
-    
-      - Optimizer settings
-      - Dropout rate
-      - Clipping
-	  - Saving prefix
-      - ...
+The experiment is conduced on a spoken dialogues corpus which is a set of automatically transcribed human-human telephone conversations from the customer care service (CCS) of the RATP Paris transportation system. The DECODA corpus is composed of 1,242 telephone conversations, which corresponds to about 74 hours of signal. Each conversation has to be mapped to the right theme (8).  
