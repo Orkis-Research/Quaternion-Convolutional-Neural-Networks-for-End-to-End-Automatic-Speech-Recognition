@@ -5,7 +5,6 @@
 # Authors: Olexa Bilaniuk
 #
 # What this module includes by default:
-import complexnn.conv, complexnn.dense, complexnn.init
 
 from   .conv  import (QuaternionConv,
 					  QuaternionConv1D,
