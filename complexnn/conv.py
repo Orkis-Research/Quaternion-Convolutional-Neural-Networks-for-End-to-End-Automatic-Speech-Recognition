@@ -165,9 +165,8 @@ class QuaternionConv(Layer):
 		input_dim = input_shape[channel_axis] // 4
 		self.kernel_shape = self.kernel_size + (input_dim , self.filters)
 		
-                if self.kernel_initializer in {'quaternion', 'quaternion_independent'}:
-			kls = {'quaternion':			 QuaternionInit,
-				   'quaternion_independent': QuaternionIndependentFilters}[self.kernel_initializer]
+                if self.kernel_initializer in {'quaternion'}:
+			kls = {'quaternion':	qconv_init,}[self.kernel_initializer]
 			kern_init = kls(
 				kernel_size=self.kernel_size,
 				input_dim=input_dim,
