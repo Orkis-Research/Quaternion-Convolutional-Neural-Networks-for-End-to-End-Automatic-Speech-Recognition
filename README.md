@@ -6,20 +6,12 @@ the paper [Quaternion Convolutional Neural Networks for End-to-End Automatic Spe
 
 Requirements
 ------------
-
 Install requirements for experiments with pip:
 ```
 pip install numpy tensorflow-gpu keras theano
 ```
 Depending on your Python installation you might want to use anaconda or other tools.
-You can also go to the 'Installation' Section and execute the command for an automatic installation.
-
-Installation
-------------
-Install all the needed dependencies.
-```
-python setup.py install
-```
+Python Version :  2.7.13 (Might requires some adjustments for 3.x)
 
 TIMIT
 -----
