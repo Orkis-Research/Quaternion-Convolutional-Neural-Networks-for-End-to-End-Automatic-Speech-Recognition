@@ -158,7 +158,3 @@ class SqrtInit(Initializer):
 	def __call__(self, shape, dtype=None):
 		return K.constant(1 / K.sqrt(2), shape=shape, dtype=dtype)
 
-
-# Aliases:
-sqrt_init = SqrtInit
-quaternion_init = QuaternionInit
