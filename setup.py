@@ -11,7 +11,7 @@ setup(
     license='MIT',
     long_description=DESCRIPTION,
     packages=['complexnn'],
-    scripts=['scripts/run.py', 'scripts/training.py'],
+    scripts=['working_example.py'],
     install_requires=[
         "numpy", "scipy", "scikit-learn", "keras", "tensorflow-gpu"]
         
