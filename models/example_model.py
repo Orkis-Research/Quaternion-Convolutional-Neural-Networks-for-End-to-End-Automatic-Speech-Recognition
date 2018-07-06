@@ -15,10 +15,12 @@ import numpy                                 as     np
 def CNN(params):
 
 
-    input_seq = Input((1000,1))
+    
 
     if(params.model == 'QCNN'):
 
+        input_seq = Input((250,4))
+        
         # Conv
         conv    = QuaternionConv1D(32, 3, strides=1, activation='relu', padding="same")(input_seq)
         pool    = AveragePooling1D(2, padding='same')(conv)
@@ -30,6 +32,8 @@ def CNN(params):
         dense  = QuaternionDense(256, activation='relu')(flat)
     
     else:
+   
+        input_seq = Input((250,3))
         # Conv
         conv    = Conv1D(32, 3, strides=1, activation='relu', padding="same")(input_seq)
         pool    = AveragePooling1D(2, padding='same')(conv)
@@ -49,16 +53,24 @@ def CNN(params):
 
 def DNN(params):
 
-    input_seq = Input((1000,))
-
     if(params.model == 'DNN'):
-        h0 = Dense(512, activation='relu')(input_seq)
+        
+        input_seq = Input((250,3))
+        
+        I = Flatten()(input_seq)
+        
+        h0 = Dense(512, activation='relu')(I)
         d0 = Dropout(0.3)(h0)
         h1 = Dense(512, activation='relu')(d0)
         d1 = Dropout(0.3)(h1)
         h2 = Dense(512, activation='relu')(d1)
     elif(params.model == 'QDNN'):
-        h0 = QuaternionDense(512, activation='relu')(input_seq)
+        
+        input_seq = Input((250,4))
+        
+        I = Flatten()(input_seq)
+        
+        h0 = QuaternionDense(512, activation='relu')(I)
         d0 = Dropout(0.3)(h0)
         h1 = QuaternionDense(512, activation='relu')(h0)
         d1 = Dropout(0.3)(h1)
