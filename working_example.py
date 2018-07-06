@@ -16,13 +16,18 @@ import argparse              as Ap
 ###### UTILS FOR THE EXAMPLE_SCRIPT ######
 ##########################################
 
-def dataPrepDecodaQuaternion(filename, isquat=False):
+def dataPrepDecodaQuaternion(filename, isquat=True):
 
     nbTopics         = 250
     quaternionFactor = 4
+    realChannel      = 3
     nbClasses        = 8
     raw              = open(filename, 'r').readlines()
-    x                = np.ndarray(shape=(len(raw), nbTopics*quaternionFactor))
+
+    if(isquat):
+        x            = np.ndarray(shape=(len(raw), nbTopics, quaternionFactor))
+    else:
+        x            = np.ndarray(shape=(len(raw), nbTopics, realChannel))
     y                = np.ndarray(shape=(len(raw), nbClasses))
     elementCpt       = 0
     documentCpt      = 0
@@ -33,20 +38,20 @@ def dataPrepDecodaQuaternion(filename, isquat=False):
 
         # DATA
         for element in elements:
-            components                                    = element.split(',')
+            components                                = element.split(',')
 
             if(isquat):
-                x[documentCpt][elementCpt]                = components[0]
-                x[documentCpt][elementCpt+(nbElements)]   = components[1]
-                x[documentCpt][elementCpt+(2*nbElements)] = components[2]
-                x[documentCpt][elementCpt+(3*nbElements)] = components[3]
+                x[documentCpt][elementCpt][0]   = components[0]
+                x[documentCpt][elementCpt][1]   = components[1]
+                x[documentCpt][elementCpt][2]   = components[2]
+                x[documentCpt][elementCpt][3]   = components[3]
             else:
-                x[documentCpt][4*elementCpt]              = components[0]
-                x[documentCpt][4*elementCpt+1]            = components[1]
-                x[documentCpt][4*elementCpt+2]            = components[2]
-                x[documentCpt][4*elementCpt+3]            = components[3]
+                x[documentCpt][elementCpt][0]   = components[1]
+                x[documentCpt][elementCpt][1]   = components[2]
+                x[documentCpt][elementCpt][2]   = components[3]
+
             elementCpt += 1
-        elementCpt = 0
+        elementCpt   = 0
 
         # LABELS
         labels   = doc.split('\t')[1].split(" ")
@@ -55,10 +60,8 @@ def dataPrepDecodaQuaternion(filename, isquat=False):
             values                   = label.split(',')
             y[documentCpt][labelCpt] = values[0]
             labelCpt                += 1
-        labelCpt     = 0
+        labelCpt = 0
         documentCpt += 1
-
-    x = normalize(x)
     
     return x,y
 
