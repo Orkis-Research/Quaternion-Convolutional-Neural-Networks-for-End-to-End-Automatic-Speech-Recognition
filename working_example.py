@@ -97,10 +97,6 @@ else:
     x_dev,   y_dev   = dataPrepDecodaQuaternion('decoda/250_DEV_Q.data',  isquat=False)
     x_test,  y_test  = dataPrepDecodaQuaternion('decoda/250_TEST_Q.data', isquat=False)
 
-if(params.model in ['CNN' , 'QCNN']):
-    x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
-    x_dev   = np.reshape(x_dev,   (x_dev.shape[0],   x_dev.shape[1],   1))
-    x_test  = np.reshape(x_test,  (x_test.shape[0],  x_test.shape[1],  1))
 
 print('Train size : '+str(x_train.shape[0]))
 print('Dev size   : '+str(x_dev.shape[0]))
