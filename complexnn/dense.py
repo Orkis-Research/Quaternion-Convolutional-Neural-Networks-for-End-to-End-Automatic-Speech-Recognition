@@ -171,7 +171,7 @@ class QuaternionDense(Layer):
         return tuple(output_shape)
 
     def get_config(self):
-        if self.kernel_initializer in {'quaternion'}:
+        if self.kernel_initializer == 'quaternion':
             ki = self.kernel_init
         else:
             ki = initializers.serialize(self.kernel_initializer)
