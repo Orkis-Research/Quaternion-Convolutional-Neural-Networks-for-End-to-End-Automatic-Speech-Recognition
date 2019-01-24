@@ -59,7 +59,7 @@ class QuaternionDense(Layer):
                  activation=None,
                  use_bias=True,
                  init_criterion='he',
-                 kernel_initializer=qdense_init,
+                 kernel_initializer='quaternion',
                  bias_initializer='zeros',
                  kernel_regularizer=None,
                  bias_regularizer=None,
@@ -76,6 +76,7 @@ class QuaternionDense(Layer):
         self.activation = activations.get(activation)
         self.use_bias = use_bias
         self.init_criterion = init_criterion
+        self.kernel_initializer = kernel_initializer
         self.bias_initializer = initializers.get(bias_initializer)
         self.kernel_regularizer = regularizers.get(kernel_regularizer)
         self.bias_regularizer = regularizers.get(bias_regularizer)
@@ -97,11 +98,11 @@ class QuaternionDense(Layer):
         kernel_shape = (input_dim, self.units)
         init_shape = (input_dim, self.q_units)
         
-        kern_init = qdense_init(init_shape, self.init_criterion)
+        self.kernel_init = qdense_init(init_shape, self.init_criterion)
 
         self.kernel = self.add_weight(
             shape=kernel_shape,
-            initializer=kern_init,
+            initializer=self.kernel_init,
             name='r',
             regularizer=self.kernel_regularizer,
             constraint=self.kernel_constraint
@@ -170,8 +171,8 @@ class QuaternionDense(Layer):
         return tuple(output_shape)
 
     def get_config(self):
-        if self.kernel_initializer in {'quaternion'}:
-            ki = self.kernel_initializer
+        if self.kernel_initializer == 'quaternion':
+            ki = self.kernel_init
         else:
             ki = initializers.serialize(self.kernel_initializer)
         config = {
@@ -190,4 +191,5 @@ class QuaternionDense(Layer):
         }
         base_config = super(QuaternionDense, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
+
 
